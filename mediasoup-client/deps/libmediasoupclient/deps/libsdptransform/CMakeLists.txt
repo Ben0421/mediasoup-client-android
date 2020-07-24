@@ -22,7 +22,9 @@ if(${SDPTRANSFORM_BUILD_READMEHELPER})
 	subdirs(readme-helper)
 endif()
 
+add_subdirectory(./deps)
 include_directories(${sdptransform_SOURCE_DIR}/include)
+include_directories(${sdptransform_SOURCE_DIR}/deps/re2/)
 
 set(
 	SOURCE_FILES
@@ -38,6 +40,7 @@ set(
 )
 
 add_library(sdptransform STATIC ${SOURCE_FILES} ${HEADER_FILES})
+target_link_libraries(sdptransform re2)
 
 install(TARGETS sdptransform DESTINATION lib)
 install(FILES ${HEADER_FILES} DESTINATION include/sdptransform)
