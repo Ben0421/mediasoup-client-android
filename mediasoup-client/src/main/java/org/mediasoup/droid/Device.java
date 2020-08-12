@@ -8,19 +8,12 @@ public class Device {
   private final static String TAG = "DROID_DEVICE";
 
   private long mNativeDevice;
-  private PeerConnectionFactory pcFactory;
 
-  public Device() {
-    mNativeDevice = nativeNewDevice();
-  }
-
-  public Device(PeerConnectionFactory pcFactory){
-    this.pcFactory = pcFactory;
+  public Device(){
     mNativeDevice = nativeNewDevice();
   }
 
   public void dispose() {
-    this.pcFactory = null;
     checkDeviceExists();
     nativeFreeDevice(mNativeDevice);
     mNativeDevice = 0;

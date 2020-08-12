@@ -1,5 +1,6 @@
 #define MSC_CLASS "Device"
 
+#include <android/log.h>
 #include "Device.hpp"
 #include "Logger.hpp"
 #include "MediaSoupClientErrors.hpp"

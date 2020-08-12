@@ -40,9 +40,9 @@ namespace mediasoupclient {
 static jlong JNI_Device_NewDevice(JNIEnv* env);
 
 JNI_GENERATOR_EXPORT jlong Java_org_mediasoup_droid_Device_nativeNewDevice(
-    JNIEnv* env,
-    jclass jcaller) {
-  return JNI_Device_NewDevice(env);
+        JNIEnv* env,
+        jclass jcaller) {
+    return JNI_Device_NewDevice(env);
 }
 
 static void JNI_Device_FreeDevice(JNIEnv* env, jlong device);

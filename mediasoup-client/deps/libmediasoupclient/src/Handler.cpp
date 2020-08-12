@@ -1,5 +1,6 @@
 #define MSC_CLASS "Handler"
 
+#include <android/log.h>
 #include "Handler.hpp"
 #include "Logger.hpp"
 #include "MediaSoupClientErrors.hpp"

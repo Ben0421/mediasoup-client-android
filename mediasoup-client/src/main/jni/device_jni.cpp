@@ -13,6 +13,7 @@
 
 namespace mediasoupclient
 {
+
 static jlong JNI_Device_NewDevice(JNIEnv* env)
 {
 	MSC_TRACE();
