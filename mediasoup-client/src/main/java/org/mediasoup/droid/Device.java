@@ -1,14 +1,26 @@
 package org.mediasoup.droid;
 
+import android.util.Log;
+
+import org.webrtc.PeerConnectionFactory;
+
 public class Device {
+  private final static String TAG = "DROID_DEVICE";
 
   private long mNativeDevice;
+  private PeerConnectionFactory pcFactory;
 
   public Device() {
     mNativeDevice = nativeNewDevice();
   }
 
+  public Device(PeerConnectionFactory pcFactory){
+    this.pcFactory = pcFactory;
+    mNativeDevice = nativeNewDevice();
+  }
+
   public void dispose() {
+    this.pcFactory = null;
     checkDeviceExists();
     nativeFreeDevice(mNativeDevice);
     mNativeDevice = 0;
@@ -41,6 +53,7 @@ public class Device {
       String iceCandidates,
       String dtlsParameters)
       throws MediasoupException {
+    Log.e(TAG, "createSendTransport: Creating sendTransport without pcFactory");
     return createSendTransport(
         listener, id, iceParameters, iceCandidates, dtlsParameters, null, null);
   }
@@ -55,6 +68,11 @@ public class Device {
       String appData)
       throws MediasoupException {
     checkDeviceExists();
+
+    if(options == null || options.mFactory == null){
+      Log.e(TAG, "createSendTransport2: Creating sendTransport without pcFactory");
+    }
+
     return nativeCreateSendTransport(
         mNativeDevice,
         listener,
@@ -77,6 +95,7 @@ public class Device {
       String dtlsParameters,
       String appData)
       throws MediasoupException {
+    Log.e(TAG, "createRecvTransport1: Creating recvTransport without pcFactory");
     return createRecvTransport(
         listener, id, iceParameters, iceCandidates, dtlsParameters, null, appData);
   }
@@ -91,6 +110,11 @@ public class Device {
       String appData)
       throws MediasoupException {
     checkDeviceExists();
+
+    if(options == null || options.mFactory == null){
+      Log.e(TAG, "createRecvTransport2: Creating recvTransport without pcFactory");
+    }
+
     return nativeCreateRecvTransport(
         mNativeDevice,
         listener,
