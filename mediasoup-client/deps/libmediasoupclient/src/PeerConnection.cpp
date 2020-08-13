@@ -68,7 +68,6 @@ namespace mediasoupclient
 		webrtc::PeerConnectionInterface::RTCConfiguration config;
 
 		if (options != nullptr) {
-            __android_log_print(ANDROID_LOG_ERROR, "DROID_PC", "Peer connection options not provided!");
             config = options->config;
         }
 
