@@ -43,7 +43,7 @@ static void JNI_Device_Load(
 	JavaToNativeOptions(env, j_config, j_peerConnection_factory, options);
 
 	if(options.factory == nullptr){
-        __android_log_print(ANDROID_LOG_ERROR, "DROID_JNIDEVICE_LOAD", "Peer connection options not provided: %d", j_peerConnection_factory);
+        __android_log_print(ANDROID_LOG_ERROR, "DROID_JNIDEVICE_LOAD", "Peer connection options not provided: %lld", j_peerConnection_factory);
         options.factory = reinterpret_cast<webrtc::PeerConnectionFactoryInterface*>(j_peerConnection_factory);
         __android_log_print(ANDROID_LOG_ERROR, "DROID_JNIDEVICE_LOAD", "Peer connection options is now: %p", options.factory);
 	}
