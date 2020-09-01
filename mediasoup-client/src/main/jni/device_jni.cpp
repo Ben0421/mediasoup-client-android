@@ -1,5 +1,6 @@
 #define MSC_CLASS "device_jni"
 
+#include <android/log.h>
 #include "generated_mediasoupclient_jni/jni/Device_jni.h"
 #include "Device.hpp"
 #include "Logger.hpp"
@@ -13,6 +14,7 @@
 
 namespace mediasoupclient
 {
+
 static jlong JNI_Device_NewDevice(JNIEnv* env)
 {
 	MSC_TRACE();
@@ -29,14 +31,27 @@ static void JNI_Device_FreeDevice(JNIEnv* env, jlong j_device)
 }
 
 static void JNI_Device_Load(
-  JNIEnv* env, jlong j_device, const JavaParamRef<jstring>& j_routerRtpCapabilities)
-{
+	  JNIEnv* env,
+	  jlong j_device,
+	  const JavaParamRef<jstring>& j_routerRtpCapabilities,
+	  const JavaParamRef<jobject>& j_config,
+	  jlong j_peerConnection_factory
+  ){
 	MSC_TRACE();
+
+	PeerConnection::Options options;
+	JavaToNativeOptions(env, j_config, j_peerConnection_factory, options);
+
+	if(options.factory == nullptr){
+        __android_log_print(ANDROID_LOG_ERROR, "DROID_JNIDEVICE_LOAD", "Peer connection options not provided: %lld", j_peerConnection_factory);
+        options.factory = reinterpret_cast<webrtc::PeerConnectionFactoryInterface*>(j_peerConnection_factory);
+        __android_log_print(ANDROID_LOG_ERROR, "DROID_JNIDEVICE_LOAD", "Peer connection options is now: %p", options.factory);
+	}
 
 	try
 	{
 		auto capabilities = JavaToNativeString(env, j_routerRtpCapabilities);
-		reinterpret_cast<Device*>(j_device)->Load(json::parse(capabilities));
+		reinterpret_cast<Device*>(j_device)->Load(json::parse(capabilities), &options);
 	}
 	catch (const std::exception& e)
 	{

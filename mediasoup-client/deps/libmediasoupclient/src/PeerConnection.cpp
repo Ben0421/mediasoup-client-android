@@ -1,5 +1,6 @@
 #define MSC_CLASS "PeerConnection"
 
+#include <android/log.h>
 #include "PeerConnection.hpp"
 #include "Logger.hpp"
 #include "MediaSoupClientErrors.hpp"
@@ -66,17 +67,22 @@ namespace mediasoupclient
 
 		webrtc::PeerConnectionInterface::RTCConfiguration config;
 
-		if (options != nullptr)
-			config = options->config;
+		if (options != nullptr) {
+            config = options->config;
+        }
 
 		// PeerConnection factory provided.
 		if ((options != nullptr) && (options->factory != nullptr))
 		{
+			__android_log_print(ANDROID_LOG_WARN, "DROID_PC", "Peer connection factory provided!");
+
 			this->peerConnectionFactory =
 			  rtc::scoped_refptr<webrtc::PeerConnectionFactoryInterface>(options->factory);
 		}
 		else
 		{
+			__android_log_print(ANDROID_LOG_ERROR, "DROID_PC", "Peer connection factory not provided!");
+
 			this->networkThread   = rtc::Thread::CreateWithSocketServer();
 			this->signalingThread = rtc::Thread::Create();
 			this->workerThread    = rtc::Thread::Create();

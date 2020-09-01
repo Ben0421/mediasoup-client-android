@@ -1,5 +1,6 @@
 #define MSC_CLASS "Device"
 
+#include <android/log.h>
 #include "Device.hpp"
 #include "Logger.hpp"
 #include "MediaSoupClientErrors.hpp"
@@ -55,11 +56,18 @@ namespace mediasoupclient
 		if (this->loaded)
 			MSC_THROW_INVALID_STATE_ERROR("already loaded");
 
+		if(peerConnectionOptions == nullptr){
+			__android_log_print(ANDROID_LOG_ERROR, "DROID_DEVICE_LOAD", "Peer connection options not provided!");
+		} else if(peerConnectionOptions->factory == nullptr){
+			__android_log_print(ANDROID_LOG_ERROR, "DROID_DEVICE_LOAD", "Peer connection factory not provided!");
+		}
+
 		// This may throw.
 		ortc::validateRtpCapabilities(routerRtpCapabilities);
 
 		// Get Native RTP capabilities.
-		auto nativeRtpCapabilities = Handler::GetNativeRtpCapabilities(peerConnectionOptions);
+        auto nativeRtpCapabilities = Handler::GetNativeRtpCapabilities();
+        // auto nativeRtpCapabilities = Handler::GetNativeRtpCapabilities(peerConnectionOptions); // This will fail. Config is null but no way to check
 
 		MSC_DEBUG("got native RTP capabilities:\n%s", nativeRtpCapabilities.dump(4).c_str());
 
@@ -67,8 +75,7 @@ namespace mediasoupclient
 		ortc::validateRtpCapabilities(nativeRtpCapabilities);
 
 		// Get extended RTP capabilities.
-		this->extendedRtpCapabilities =
-		  ortc::getExtendedRtpCapabilities(nativeRtpCapabilities, routerRtpCapabilities);
+		this->extendedRtpCapabilities = ortc::getExtendedRtpCapabilities(nativeRtpCapabilities, routerRtpCapabilities);
 
 		MSC_DEBUG("got extended RTP capabilities:\n%s", this->extendedRtpCapabilities.dump(4).c_str());
 
@@ -138,6 +145,12 @@ namespace mediasoupclient
 		if (!sctpParameters.is_null())
 			ortc::validateSctpParameters(const_cast<json&>(sctpParameters));
 
+		if(peerConnectionOptions == nullptr){
+			__android_log_print(ANDROID_LOG_ERROR, "DROID_DEVICE_SENDTRANSP1", "Peer connection options not provided!");
+		} else if(peerConnectionOptions->factory == nullptr){
+			__android_log_print(ANDROID_LOG_ERROR, "DROID_DEVICE_SENDTRANSP1", "Peer connection factory not provided!");
+		}
+
 		// Create a new Transport.
 		auto* transport = new SendTransport(
 		  listener,
@@ -164,6 +177,12 @@ namespace mediasoupclient
 	  const json& appData) const
 	{
 		MSC_TRACE();
+
+		if(peerConnectionOptions == nullptr){
+			__android_log_print(ANDROID_LOG_ERROR, "DROID_DEVICE_SENDTRANSP2", "Peer connection options not provided!");
+		} else if(peerConnectionOptions->factory == nullptr){
+			__android_log_print(ANDROID_LOG_ERROR, "DROID_DEVICE_SENDTRANSP2", "Peer connection factory not provided!");
+		}
 
 		return Device::CreateSendTransport(
 		  listener, id, iceParameters, iceCandidates, dtlsParameters, nullptr, peerConnectionOptions, appData);
@@ -194,6 +213,12 @@ namespace mediasoupclient
 		if (!sctpParameters.is_null())
 			ortc::validateSctpParameters(const_cast<json&>(sctpParameters));
 
+		if(peerConnectionOptions == nullptr){
+			__android_log_print(ANDROID_LOG_ERROR, "DROID_DEVICE_RECVTRANSP1", "Peer connection options not provided!");
+		} else if(peerConnectionOptions->factory == nullptr){
+			__android_log_print(ANDROID_LOG_ERROR, "DROID_DEVICE_RECVTRANSP1", "Peer connection factory not provided!");
+		}
+
 		// Create a new Transport.
 		auto* transport = new RecvTransport(
 		  listener,
@@ -219,6 +244,12 @@ namespace mediasoupclient
 	  const json& appData) const
 	{
 		MSC_TRACE();
+
+		if(peerConnectionOptions == nullptr){
+			__android_log_print(ANDROID_LOG_ERROR, "DROID_DEVICE_RECVTRANSP2", "Peer connection options not provided!");
+		} else if(peerConnectionOptions->factory == nullptr){
+			__android_log_print(ANDROID_LOG_ERROR, "DROID_DEVICE_RECVTRANSP2", "Peer connection factory not provided!");
+		}
 
 		return Device::CreateRecvTransport(
 		  listener, id, iceParameters, iceCandidates, dtlsParameters, nullptr, peerConnectionOptions, appData);
